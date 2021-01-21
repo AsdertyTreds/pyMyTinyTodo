@@ -4,6 +4,8 @@ Written in Python and js jQuery.
 Data stored in SQLite, MySQL, PosgreSql, MSSql, Oracle database.
 Distributed under the GNU GPL License
 
+This is a copy and continuation of the project https://mytinytodo.net
+
 System requirements
 
     Python~=3.7
