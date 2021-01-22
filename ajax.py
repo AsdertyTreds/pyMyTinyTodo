@@ -4,9 +4,12 @@ import datetime
 import json
 from locale import setlocale, LC_TIME
 from flask import session
-from mttdatabase import os, database, Lists, Todolist, Tags2Task, Tags, func, s
+from mttdatabase import os, database, Lists, Todolist, Tags2Task, Tags, func, s, app
 from sqlalchemy.exc import OperationalError as Error
+from math import ceil
+import langs
 
+language = langs.getlanguage(app.static_folder + '/lang/' + s.values['lang'] + '.json')
 
 def need_auth():
     return 0 if s.values['password'] == '' else 1

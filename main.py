@@ -1,9 +1,9 @@
 from flask import render_template, request, url_for, flash, redirect
-import langs
 from ajax import *
-from mttdatabase import app, table_exists
 
-language = langs.getlanguage(app.static_folder + '/lang/' + s.values['lang'] + '.json')
+
+if s.values['setup'] == 2:
+    s.values['setup'] = 3
 
 
 @app.route('/ajax', methods=('GET', 'POST'))
@@ -105,7 +105,7 @@ def ajax():
 
 @app.route('/')
 def index():
-    if s.values['setup'] > 2:
+    if s.values['setup'] > 3:
         sitetype = 1
         if not request.args.get('mobile') is None:
             sitetype = 2
@@ -167,8 +167,8 @@ def settings():
                     s.values['sql_user'] = request.form['sql_user']
                     s.values['sql_host'] = request.form['sql_host']
 
-                if not table_exists(s.values['prefix'] + 'lists'):
-                    from mttdatabase import database, Lists
+            if s.values['setup'] == 3:
+                if not database.engine.dialect.has_table(database.engine, s.values['prefix'] + 'lists'):
                     database.create_all()
                     row = Lists(uuid=str(uuid.uuid4()),
                                 name='Todo1',
@@ -177,9 +177,10 @@ def settings():
                                 taskview=1)
                     database.session.add(row)
                     database.session.commit()
-                s.values['setup'] = 3
+                    s.values['setup'] = 4
+                return redirect(url_for('index'))
             s.save('db/config.json')
-            return redirect(url_for('index'))
+
 
         elif s.values['setup'] == 1:
             title = request.form['title']
