@@ -280,8 +280,6 @@ def preparetaskrow1(rows):
 
 
 def preparetaskrow(rows):
-    from main import language
-    from math import ceil
     ret = []
     for row in rows:
         a = (time.localtime(time.time())[0], time.localtime(time.time())[1], time.localtime(time.time())[2],

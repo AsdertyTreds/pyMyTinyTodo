@@ -177,7 +177,8 @@ def settings():
                                 taskview=1)
                     database.session.add(row)
                     database.session.commit()
-                    s.values['setup'] = 4
+                s.values['setup'] = 4
+                s.save('db/config.json')
                 return redirect(url_for('index'))
             s.save('db/config.json')
 
