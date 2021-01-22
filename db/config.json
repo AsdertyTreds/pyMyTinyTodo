@@ -1,5 +1,5 @@
 {
-    "autotag": 0,
+    "autotag": 1,
     "clock": 24,
     "dateformat": "%B %d, %Y",
     "dateformat2": "%d.%m.%Y",
@@ -14,7 +14,7 @@
     "password": "",
     "prefix": "mtt_",
     "session": false,
-    "setup": 3,
+    "setup": 1,
     "showdate": 0,
     "smartsyntax": 1,
     "sql_db": "",
