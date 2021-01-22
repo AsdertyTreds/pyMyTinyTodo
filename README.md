@@ -23,11 +23,12 @@ Tested in browsers: Chrome 85, Safari 14, Firefox 80, IE v11
 
 How to install myTinyTodo
 
-    Make enviroment 
-    > git clone https://github.com/AsdertyTreds/pyMyTinyTodo.git
+    Download release archive
+    Unpack
+    Make enviroment in directory pymytinytodo
+    > python -m venv venv
     > pip install -r requirements.txt
-    > flask_app=main
-    > flask run	
+    > python main.py
     Go to http://127.0.0.1:5000
     Make sure config file 'db/config.json' is writable for webserver.
     Select and specify settings of database you prefer in start page. 
