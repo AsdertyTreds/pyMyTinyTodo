@@ -1,9 +1,5 @@
 from flask import render_template, request, url_for, flash, redirect
-import langs
 from ajax import *
-from mttdatabase import app, table_exists
-
-language = langs.getlanguage(app.static_folder + '/lang/' + s.values['lang'] + '.json')
 
 
 @app.route('/ajax', methods=('GET', 'POST'))

@@ -4,8 +4,12 @@ import datetime
 import json
 from locale import setlocale, LC_TIME
 from flask import session
-from mttdatabase import os, database, Lists, Todolist, Tags2Task, Tags, func, s
+from mttdatabase import os, database, Lists, Todolist, Tags2Task, Tags, func, s, app, table_exists
 from sqlalchemy.exc import OperationalError as Error
+from math import ceil
+import langs
+
+language = langs.getlanguage(app.static_folder + '/lang/' + s.values['lang'] + '.json')
 
 
 def need_auth():
@@ -277,8 +281,6 @@ def preparetaskrow1(rows):
 
 
 def preparetaskrow(rows):
-    from main import language
-    from math import ceil
     ret = []
     for row in rows:
         a = (time.localtime(time.time())[0], time.localtime(time.time())[1], time.localtime(time.time())[2],
