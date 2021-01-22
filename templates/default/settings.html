@@ -1,0 +1,196 @@
+{% extends s.templates+'/base.html' if s.templates is defined else 'base.html' %}
+
+{% block bar_menu %}
+ <div class="bar-menu">
+   <span class="need-owner">
+     <a href="{{ url_for('settings') }}" id="settings">{{ l.a_settings }}</a>
+   </span>
+ </div>
+{% endblock %}
+
+{% block script %}
+<script>
+
+</script>
+{% endblock %}
+
+{% block context %}
+<h3>{{ l.a_settings }}</h3>
+<form id="settings_form" method="post">
+
+<table class="mtt-settings-table">
+
+<tbody><tr>
+<th>{{ l.set_title }}<br><span class="descr">{{ l.set_title_descr }}</span></th>
+<td> <input name="title" value="{{ request.form['title'] or s.title }}" class="in350" autocomplete="off"> </td>
+</tr>
+
+<tr>
+<th>{{ l.set_language }}:</th>
+<td>
+	<select name="lang">
+        {% for lang in langlist %}
+            <option value="{{ lang[0] }}" title="{{ lang[2] }}" {% if s.lang==lang[0] %}selected="selected"{% endif %}>{{ lang[1] }}</option>
+        {% endfor %}
+    </select>
+	</td>
+</tr>
+{% if s.setup>1 %}
+<tr>
+<th>{{ l.set_database }} (Database):</th>
+<td>
+	<select name="db" {% if s.setup==3 %} disabled="disabled" {% endif %}>
+        <option value="sqlite" title="SQLite" onclick="$(this.form).find(&quot;#sql&quot;).hide()" {% if s.db=='sqlite' %} selected="selected" {% endif %}>SQLite</option>
+        <option value="mysql" title="Mysql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='mysql' %} selected="selected" {% endif %}>Mysql</option>
+        <option value="postgresql" title="Postgresql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='postgresql' %} selected="selected" {% endif %}>Postgresql</option>
+        <option value="mssql" title="Mssql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='mssql' %} selected="selected" {% endif %}>MS-sql</option>
+        <option value="oracle" title="Oracle" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='oracle' %} selected="selected" {% endif %}>Oracle</option>
+    </select>
+</td>
+<tr id="sql" {% if s.db=='sqlite' %} style="display: none;" {% endif %}>
+<th>{{ l.set_sql }}(Mysql settings):</th>
+<td>
+<table>
+<tr>
+<th>host</th>
+<td> <input name="sql_host" value="{{ request.form['sql_host'] or s.sql_host }}" class="in350" autocomplete="off"> </td>
+</tr>
+<tr>
+<th>db</th>
+<td> <input name="sql_db" value="{{ request.form['sql_db'] or s.sql_db }}" class="in350" autocomplete="off"> </td>
+</tr>
+<tr>
+<th>user</th>
+<td> <input name="sql_user" value="{{ request.form['sql_user'] or s.sql_user }}" class="in350" autocomplete="off"> </td>
+</tr>
+<tr>
+<th>password</th>
+<td> <input name="sql_password" value="{{ request.form['sql_password'] or s.sql_password }}" class="in350" autocomplete="off"> </td>
+</tr>
+</table>
+</td>
+</tr>
+</tr>
+
+<tr>
+<th>{{ l.set_protection }}:</th>
+<td>
+ <label><input type="radio" name="allowpassword" value="1" {% if s.password!='' %} checked="checked" {% endif %} onclick="$(this.form).find(&quot;input[name=password]&quot;).attr(&quot;disabled&quot;,false)">{{ l.set_enabled }}</label> <br>
+ <label><input type="radio" name="allowpassword" value="0" {% if s.password=='' %} checked="checked" {% endif %} onclick="$(this.form).find(&quot;input[name=password]&quot;).attr(&quot;disabled&quot;,&quot;disabled&quot;)">{{ l.set_disabled }}</label> <br>
+</td>
+</tr>
+
+<tr>
+<th>{{ l.set_newpass }}:<br><span class="descr">{{ l.set_new_pass_descr }}</span></th>
+<td> <input type="password" name="password" {% if s.password=='' %} disabled="disabled" {% endif %} value="{{ request.form['password'] or s.password }}"> </td>
+</tr>
+
+<tr>
+<th>{{ l.set_smartsyntax}}:<br><span class="descr">{{ l.set_smartsyntax_descr}}</span></th>
+<td>
+ <label><input type="radio" name="smartsyntax" value="1" {% if s.smartsyntax==1 %} checked="checked" {% endif %}>{{ l.set_enabled }}</label> <br>
+ <label><input type="radio" name="smartsyntax" value="0" {% if s.smartsyntax==0 %} checked="checked" {% endif %}>{{ l.set_disabled }}</label>
+</td></tr>
+
+<tr>
+<th>{{ l.set_autotag }}:<br><span class="descr">{{ l.set_autotag_descr }}</span></th>
+<td>
+ <label><input type="radio" name="autotag" value="1" {% if s.autotag==1 %} checked="checked" {% endif %}>{{ l.set_enabled }}</label> <br>
+ <label><input type="radio" name="autotag" value="0" {% if s.autotag==0 %} checked="checked" {% endif %}>{{ l.set_disabled }}</label>
+</td></tr>
+
+<!--tr>
+<th>Session handling mechanism:</th>
+<td>
+ <label><input type="radio" name="session" value="default">PHP</label> <br>
+ <label><input type="radio" name="session" value="files" checked="checked">Files</label> <span class="descr">(&lt;mytinytodo_dir&gt;/tmp/sessions)</span>
+</td></tr-->
+
+<tr>
+<th>{{ l.set_timezone }}:</th>
+<td>
+ <select name="timezone">
+     {% for timezone in timezones %}
+     <option value="{{ timezone }}" {% if s.timezone==timezone %} selected="selected" {% endif %}>{{ timezone }}</option>
+     {% endfor %}
+ </select>
+</td></tr>
+
+<tr>
+<th>{{ l.set_firstdayofweek }}:</th>
+<td>
+ <select name="firstdayofweek">
+     {% for i in [0,1,2,3,4,5,6] %}
+     <option value="{{ i }}" {% if s.firstdayofweek==i %}selected="selected"{% endif %}>{{ l.days_long[i] }}</option>
+     {% endfor %}
+ </select>
+</td></tr>
+
+<tr>
+<th>{{ l.set_date }}:</th>
+<td>
+ <input name="dateformat" value="{{ s.dateformat }}">
+ <select onchange="if(this.value!=0) this.form.dateformat.value=this.value;">
+     <option value="%B %d, %Y" {% if s.dateformat=='%B %d, %Y' %} selected="selected" {% endif %}>{{ l.months_long[0] }} 21, 2020</option>
+     <option value="%b %d, %Y" {% if s.dateformat=='%b %d, %Y' %} selected="selected" {% endif %}>{{ l.months_short[0] }} 21, 2020</option>
+     <option value="%-d %b %Y" {% if s.dateformat=='%-d %b %Y' %} selected="selected" {% endif %}>21 {{ l.months_short[0] }} 2020</option>
+     <option value="%d %B %Y" {% if s.dateformat=='%d %B %Y' %} selected="selected" {% endif %}>21 {{ l.months_long[0] }} 2020</option>
+     <option value="%-m/%-d/%Y" {% if s.dateformat=='%-m/%-d/%Y' %} selected="selected" {% endif %}>1/21/2020</option>
+     <option value="%d.%m.%Y" {% if s.dateformat=='%d.%m.%Y' %} selected="selected" {% endif %}>21.01.2020</option>
+     <option value="%-d. %B %Y" {% if s.dateformat=='%-d. %B %Y' %} selected="selected" {% endif %}>21. {{ l.months_long[0] }} 2020</option>
+ </select>
+</td>
+</tr>
+
+<tr>
+<th>{{ l.set_date2 }}:</th>
+<td>
+ <input name="dateformat2" value="{{ s.dateformat2 }}">
+ <select onchange="if(this.value!=0) this.form.dateformat2.value=this.value;">
+ <option value="%Y-%m-%d" {% if s.dateformat2=='%Y-%m-%d' %} selected="selected" {% endif %}>yyyy-mm-dd (2020-01-21)</option>
+     <option value="%-m/%-d/%y" {% if s.dateformat2=='%-m/%-d/%y' %} selected="selected" {% endif %}>m/d/yy (1/21/20)</option>
+     <option value="%d.%m.%y" {% if s.dateformat2=='%d.%m.%y' %} selected="selected" {% endif %}>dd.mm.yy (21.01.20)</option>
+     <option value="%d.%m.%Y" {% if s.dateformat2=='%d.%m.%Y' %} selected="selected" {% endif %}>dd.mm.yyyy (21.01.2020)</option>
+     <option value="%d/%m/%y" {% if s.dateformat2=='%d/%m/%y' %} selected="selected" {% endif %}>dd/mm/yy (21/01/20)</option>
+ </select>
+</td></tr>
+
+<tr>
+<th>{{ l.set_shortdate }}:</th>
+<td>
+ <input name="dateformatshort" value="{{ s.dateformatshort }}">
+ <select onchange="if(this.value!=0) this.form.dateformatshort.value=this.value;">
+ <option value="%b %d">{{ l.months_short[0] }} 21</option>
+     <option value="%-d %b" {% if s.dateformatshort=='%-d %b' %} selected="selected" {% endif %}>21 {{ l.months_short[0] }}</option>
+     <option value="%-m/%-d" {% if s.dateformatshort=='%-m/%-d' %} selected="selected" {% endif %}>1/21</option>
+     <option value="%d.%m" {% if s.dateformatshort=='%d.%m' %} selected="selected" {% endif %}>21.01</option>
+ </select>
+</td></tr>
+
+<tr>
+<th>{{ l.set_clock }}:</th>
+<td>
+ <select name="clock">
+     <option value="12" {% if s.clock==12 %}selected="selected"{% endif %}>{{ l.set_12hour }} (3:50 PM)</option>
+     <option value="24" {% if s.clock==24 %}selected="selected"{% endif %}>{{ l.set_24hour }} (15:50)</option>
+ </select>
+</td></tr>
+
+<tr>
+<th>{{ l.set_showdate }}:</th>
+<td>
+ <label><input type="radio" name="showdate" value="1">{{ l.set_enabled }}</label> <br>
+ <label><input type="radio" name="showdate" value="0" checked="checked">{{ l.set_disabled }}</label>
+</td>
+</tr>
+{% endif %}
+
+<tr>
+<td colspan="2" class="form-bottom-buttons">
+<input type="submit" value="{{ l.set_submit }}">
+<a href="{{ url_for('index') }}"><input type="button" class="mtt-back-button" value="{{ l.set_cancel }}" ></a>
+</td></tr>
+</tbody></table>
+
+</form>
+{% endblock %}

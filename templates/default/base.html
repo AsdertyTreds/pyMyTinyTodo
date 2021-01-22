@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{ s.title }}</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}?v={{ s.version }}" media="all" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/print.css') }}?v={{ s.version }}" media="print" />
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+{% if sitetype==2 %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mobile.css') }}?v={{ s.version }}" media="all" />
+{% endif %}
+</head>
+<body>
+
+{% block script %}
+{% endblock %}
+
+<div id="wrapper">
+<div id="container">
+
+<div class="topblock">
+ <div class="topblock-title">
+   <h2>{{ s.title }}</h2>
+ </div>
+
+<div class="topblock-bar">
+ <div id="loading" style="display: none;"></div>
+ <div id="msg" style="display: none;"><span class="msg-text"></span>
+ <div class="msg-details" style="display: none;"></div>
+ </div>
+{% block bar_menu %}{% endblock %}
+</div>
+
+</div><!-- end of #topblock -->
+
+<div id="mtt_body">
+{% block context %}
+{% endblock %}
+</div><!-- end of #mtt_body -->
+
+</div><!-- end of #container -->
+
+<div id="footer">
+	<div id="footer_content">
+		<span>{{ l.powered_by }} <a href="http://www.mytinytodo.net/" class="powered-by-link">myTinyTodo</a>&nbsp;{{ s.version }}</span>
+		<span id="mobileordesktop">
+{% if sitetype==1 %}
+			<a href="{{ url_for('index',mobile='1') }}">{{ l.mobile_version }}</a>
+{% else %}
+			<a href="{{ url_for('index') }}">{{ l.desktop_version }}</a>
+{% endif %}
+		</span>
+	</div>
+</div><!-- end of #footer -->
+
+</div><!-- end of #wrapper -->
+</body>
+</html>

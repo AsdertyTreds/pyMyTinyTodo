@@ -1,0 +1,253 @@
+{% extends s.templates+'/base.html' if s.templates is defined else 'base.html' %}
+
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-ui-1.12.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/mytinytodo.js') }}?v={{ s.version }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/mytinytodo_ajax_storage.js') }}?v={{ s.version }}"></script>
+<script type="text/javascript">
+$().ready(function(){
+	mytinytodo.init({
+		title: "{{ s.title }}",
+		lang: {"daysMin":[{% for i in l.days_min %}"{{ i }}",{% endfor %}],"daysLong":[{% for i in l.days_long %}"{{ i }}",{% endfor %}],"monthsShort":[{% for i in l.months_short %}"{{ i }}",{% endfor %}],"monthsLong":[{% for i in l.months_long %}"{{ i }}",{% endfor %}],"confirmDelete":"{{ l.confirmDelete }}","confirmLeave":"{{ l.confirmLeave }}","actionNoteSave":"{{ l.actionNoteSave }}","actionNoteCancel":"{{ l.actionNoteCancel }}","error":"{{ l.error }}","denied":"{{ l.denied }}","invalidpass":"{{ l.invalidpass }}","addList":"{{ l.addList }}","addListDefault":"{{ l.addListDefault }}","renameList":"{{ l.renameList }}","deleteList":"{{ l.deleteList }}","clearCompleted":"{{ l.clearCompleted }}","settingsSaved":"{{ l.settingsSaved }}","tags":"{{ l.tags }}","tasks":"{{ l.tasks }}","f_past":"{{ l.f_past }}","f_today":"{{ l.f_today }}","f_soon":"{{ l.f_soon }}","alltasks":"{{ l.alltasks }}","_rtl":0},
+		mttUrl: "http://127.0.0.1:5000/",
+		homeUrl: "http://127.0.0.1:5000/",
+		db: mytinytodoStorageAjax,
+		needAuth: {% if s.password=='' %}false{% else %}true{% endif %},
+		isLogged: {% if s.password!='' and session.logged==1 %}true{% else %}false{% endif %},
+		showdate: {% if s.showdate==1 or sitetype==2 %}true{% else %}false{% endif %},
+		singletab: {% if sitetype==2 %}true{% else %}false{% endif %},
+		duedatepickerformat: "{{ s.dateformat2 }}",
+		firstdayofweek: {{ s.firstdayofweek }},
+		calendarIcon: "{{ url_for('static', filename='css/images/calendar.svg') }}",
+		autotag: {% if s.autotag==0 %}false{% else %}true{% endif %},
+		{% if sitetype==2 %}touchDevice: true{% endif %}
+	}).run();
+});
+</script>
+{% endblock %}
+
+{% block bar_menu %}
+ <div class="bar-menu">
+     {% if s.password=='' or session.logged==1 %}
+   <span class="need-owner">
+     <a href="{{ url_for('settings') }}" id="settings">{{ l.a_settings }}</a>
+   </span>
+     {% endif %}
+     {% if s.password!='' or session.logged==1 %}
+   <span id="bar_auth">
+     <!--span id="bar_public" style="display:none">Public Tasks |</span-->
+     <a href="#" id="bar_login" class="nodecor"><u>{{ l.a_login }}</u> <span class="arrdown"></span></a>
+     <a href="#" id="bar_logout">{{ l.a_logout }}</a>
+   </span>
+     {% endif %}
+ </div>
+{% endblock %}
+
+
+{% block context %}
+
+<div id="page_tasks" style="display:none">
+
+<div id="lists">
+ <div class="tabs-n-button">
+   <ul class="mtt-tabs"></ul>
+   <div class="mtt-tabs-add-button" title="{{ l.list_new }}"><div class="tab-height-wrapper"><span></span></div></div>
+ </div>
+ <div id="list_all" class="mtt-tab mtt-tabs-alltasks mtt-tabs-hidden">
+	 <a href="#alltasks" title="{{ l.alltasks }}"><span>{{ l.alltasks }}</span><div class="list-action"></div></a>
+ </div>
+ <div id="tabs_buttons">
+   <div class="tab-height-wrapper">
+     <div class="mtt-tabs-select-button mtt-img-button" title="{{ l.list_select }}"><span></span></div>
+   </div>
+ </div>
+</div>
+
+
+
+<div id="toolbar">
+
+<div class="newtask-n-search-container">
+<div class="taskbox-c">
+  <div class="mtt-taskbox">
+   <form id="newtask_form" method="post">
+     <input type="text" name="task" value="" maxlength="250" id="task" autocomplete="off" placeholder="{{ l.htab_newtask }}"/>
+     <div id="newtask_submit" class="mtt-taskbox-icon" title="{{ l.btn_add }}"></div>
+   </form>
+  </div>
+  <a href="#" id="newtask_adv" class="mtt-img-button" title="{{ l.advanced_add }}"><span></span></a>
+</div>
+<div class="searchbox-c">
+  <div class="mtt-searchbox">
+    <input type="text" name="search" value="" maxlength="250" id="search" autocomplete="off" />
+    <div class="mtt-searchbox-icon mtt-icon-search"></div>
+    <div id="search_close" class="mtt-searchbox-icon mtt-icon-cancelsearch"></div>
+  </div>
+</div>
+</div>
+
+<div id="searchbar" style="display:none">{{ l.searching }} <span id="searchbarkeyword"></span></div>
+
+<div id="mtt-tag-toolbar" style="display:none">
+  <div class="tag-toolbar-content">
+	<span id="mtt-tag-filters"></span>
+  </div>
+  <div class="tag-toolbar-close"><div id="mtt-tag-toolbar-close" class="mtt-img-button"><span></span></div></div>
+</div>
+
+</div>
+
+
+
+<h3>
+<span id="taskview" class="mtt-menu-button"><span class="btnstr">{{ l.tasks }}</span> (<span id="total">0</span>) <span class="arrdown"></span></span>
+<span class="mtt-notes-showhide">{{ l.notes }} <a href="#" id="mtt-notes-show">{{ l.notes_show }}</a> / <a href="#" id="mtt-notes-hide">{{ l.notes_hide }}</a></span>
+<span id="tagcloudbtn" class="mtt-menu-button">{{ l.tagcloud }} <span class="arrdown2"></span></span>
+</h3>
+
+<div id="taskcontainer">
+ <ol id="tasklist" class="sortable"></ol>
+</div>
+
+</div>
+<!-- End of page_tasks -->
+
+
+<div id="page_taskedit" style="display:none">
+
+<!--div><a href="#" class="mtt-back-button">{{ l.go_back }}</a></div-->
+
+<h3 class="mtt-inadd">{{ l.add_task }}</h3>
+<h3 class="mtt-inedit">{{ l.edit_task }}
+<div id="taskedit-date" class="mtt-inedit">
+(<span class="date-created" title="{{ l.taskdate_created }}"><span></span></span><span class="date-completed" title="{{ l.taskdate_completed }}"> &mdash; <span></span></span>)
+</div>
+</h3>
+
+<form id="taskedit_form" name="edittask" method="post">
+<input type="hidden" name="isadd" value="0" />
+<input type="hidden" name="id" value="" />
+<div class="form-row form-row-short">
+ <span class="h">{{ l.priority }}</span>
+ <select name="prio" class="form-input">
+  <option value="2">+2</option><option value="1">+1</option><option value="0" selected="selected">&plusmn;0</option><option value="-1">&minus;1</option>
+ </select>
+</div>
+<div class="form-row form-row-short">
+ <span class="h">{{ l.due }} </span>
+ <input name="duedate" id="duedate" value="" class="in100 form-input" title="Y-M-D, M/D/Y, D.M.Y, M/D, D.M" autocomplete="off" type="text" />
+</div>
+<div class="form-row-short-end"></div>
+<div class="form-row"><div class="h">{{ l.task }}</div> <input type="text" name="task" value="" class="in500 form-input" maxlength="250" autocomplete="off" /></div>
+<div class="form-row"><div class="h">{{ l.note }}</div> <textarea name="note" class="in500 form-input"></textarea></div>
+<div class="form-row"><div class="h">{{ l.tags }}</div>
+ <table cellspacing="0" cellpadding="0" width="100%"><tr>
+  <td><input type="text" name="tags" id="edittags" value="" class="in500 form-input" maxlength="250" autocomplete="off" /></td>
+  <td class="alltags-cell">
+   <a href="#" id="alltags_show">{{ l.alltags_show }}</a>
+   <a href="#" id="alltags_hide" style="display:none">{{ l.alltags_hide }}</a></td>
+ </tr></table>
+</div>
+<div class="form-row" id="alltags" style="display:none;">{{ l.alltags }} <span class="tags-list"></span></div>
+<div class="form-row form-bottom-buttons">
+ <input type="submit" value="{{ l.save }}" class="form-input-button" />
+ <input type="button" id="mtt_edit_cancel" class="mtt-back-button form-input-button" value="{{ l.cancel }}" />
+</div>
+</form>
+
+</div>  <!-- end of page_taskedit -->
+
+
+<div id="authform" style="display:none">
+<form id="login_form">
+ <div class="h">{{ l.password }}</div>
+ <div><input type="password" name="password" id="password" /></div>
+ <div><input type="submit" value="{{ l.btn_login }}" /></div>
+</form>
+</div>
+
+<div id="priopopup" style="display:none">
+ <span class="prio-neg prio-neg-1">&minus;1</span>
+ <span class="prio-zero">&plusmn;0</span>
+ <span class="prio-pos prio-pos-1">+1</span>
+ <span class="prio-pos prio-pos-2">+2</span>
+</div>
+
+<div id="taskviewcontainer" class="mtt-menu-container" style="display:none">
+<ul>
+ <li id="view_tasks">{{ l.tasks }} (<span id="cnt_total">0</span>)</li>
+ <li id="view_past">{{ l.f_past }} (<span id="cnt_past">0</span>)</li>
+ <li id="view_today">{{ l.f_today }} (<span id="cnt_today">0</span>)</li>
+ <li id="view_soon">{{ l.f_soon }} (<span id="cnt_soon">0</span>)</li>
+</ul>
+</div>
+
+<div id="tagcloud" style="display:none">
+ <a id="tagcloudcancel" class="mtt-img-button"><span></span></a>
+ <div id="tagcloudload"></div>
+ <div id="tagcloudcontent"></div>
+</div>
+
+
+<div id="listmenucontainer" class="mtt-menu-container" style="display:none">
+<ul>
+ <li class="mtt-need-list mtt-need-real-list" id="btnRenameList">{{ l.list_rename }}</li>
+ <li class="mtt-need-list mtt-need-real-list" id="btnDeleteList">{{ l.list_delete }}</li>
+ <li class="mtt-need-list mtt-need-real-list" id="btnClearCompleted">{{ l.list_clearcompleted }}</li>
+ <li class="mtt-need-list mtt-need-real-list mtt-menu-indicator" submenu="listexportmenucontainer"><div class="submenu-icon"></div>{{ l.list_export }}</li>
+ <li class="mtt-need-list mtt-need-real-list" id="btnHideList">{{ l.list_hide }}</li>
+ <li class="mtt-menu-delimiter mtt-need-real-list"></li>
+ <li class="mtt-need-list mtt-need-real-list" id="btnPublish"><div class="menu-icon"></div>{{ l.list_publish }}</li>
+ <li class="mtt-need-list mtt-need-real-list" id="btnRssFeed"><div class="menu-icon"></div><a href="#">{{ l.list_rssfeed }}</a></li>
+ <li class="mtt-menu-delimiter mtt-need-real-list"></li>
+ <li class="mtt-need-list mtt-need-real-list sort-item" id="sortByHand"><div class="menu-icon"></div>{{ l.sortByHand }} <span class="mtt-sort-direction"></span></li>
+ <li class="mtt-need-list sort-item" id="sortByDateCreated"><div class="menu-icon"></div>{{ l.sortByDateCreated }} <span class="mtt-sort-direction"></span></li>
+ <li class="mtt-need-list sort-item" id="sortByPrio"><div class="menu-icon"></div>{{ l.sortByPriority }} <span class="mtt-sort-direction"></span></li>
+ <li class="mtt-need-list sort-item" id="sortByDueDate"><div class="menu-icon"></div>{{ l.sortByDueDate }} <span class="mtt-sort-direction"></span></li>
+ <li class="mtt-need-list sort-item" id="sortByDateModified"><div class="menu-icon"></div>{{ l.sortByDateModified }} <span class="mtt-sort-direction"></span></li>
+ <li class="mtt-menu-delimiter"></li>
+ <li class="mtt-need-list" id="btnShowCompleted"><div class="menu-icon"></div>{{ l.list_showcompleted }}</li>
+</ul>
+</div>
+
+<div id="listexportmenucontainer" class="mtt-menu-container" style="display:none">
+<ul>
+  <li class="mtt-need-list mtt-need-real-list" id="btnExportCSV"><a href="#">{{ l.list_export_csv }}</a></li>
+  <li class="mtt-need-list mtt-need-real-list" id="btnExportICAL"><a href="#">{{ l.list_export_ical }}</a></li>
+</ul>
+</div>
+
+<div id="taskcontextcontainer" class="mtt-menu-container" style="display:none">
+<ul>
+ <li id="cmenu_edit"><b>{{ l.action_edit }}</b></li>
+ <li id="cmenu_note">{{ l.action_note }}</li>
+ <li id="cmenu_prio" class="mtt-menu-indicator" submenu="cmenupriocontainer"><div class="submenu-icon"></div>{{ l.action_priority }}</li>
+ <li id="cmenu_move" class="mtt-menu-indicator" submenu="cmenulistscontainer"><div class="submenu-icon"></div>{{ l.action_move }}</li>
+ <li id="cmenu_delete">{{ l.action_delete }}</li>
+</ul>
+</div>
+
+<div id="cmenupriocontainer" class="mtt-menu-container" style="display:none">
+<ul>
+ <li id="cmenu_prio:2"><div class="menu-icon"></div>+2</li>
+ <li id="cmenu_prio:1"><div class="menu-icon"></div>+1</li>
+ <li id="cmenu_prio:0"><div class="menu-icon"></div>&plusmn;0</li>
+ <li id="cmenu_prio:-1"><div class="menu-icon"></div>&minus;1</li>
+</ul>
+</div>
+
+<div id="cmenulistscontainer" class="mtt-menu-container" style="display:none">
+<ul>
+</ul>
+</div>
+
+<div id="slmenucontainer" class="mtt-menu-container" style="display:none">
+<ul>
+ <li id="slmenu_list:-1" class="list-id--1 mtt-need-list"><div class="menu-icon"></div><a href="#alltasks">{{ l.alltasks }}</a></li>
+ <li class="mtt-menu-delimiter slmenu-lists-begin mtt-need-list"></li>
+</ul>
+</div>
+
+<div id="page_ajax" style="display:none"></div>
+
+{% endblock %}
