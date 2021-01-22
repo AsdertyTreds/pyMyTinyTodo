@@ -4,7 +4,7 @@ Written in Python and js jQuery.
 Data stored in SQLite, MySQL, PosgreSql, MSSql, Oracle database.
 Distributed under the GNU GPL License
 
-This is a copy and continuation of the project https://mytinytodo.net, written in php language
+This is a copy and continuation of the project https://mytinytodo.net (author Max Pozdeev), written in php language
 
 System requirements
 
@@ -23,13 +23,17 @@ Tested in browsers: Chrome 85, Safari 14, Firefox 80, IE v11
 
 How to install myTinyTodo
 
-    pip install pymytinytodo
-    pip install -r requirements.txt
-    
-    Start flask, select and specify settings of database you prefer in start page. For sqlite usage make sure that database file 'db/mtt.db' is writable for webserver.
+    Make enviroment 
+    > git clone https://github.com/AsdertyTreds/pyMyTinyTodo.git
+    > pip install -r requirements.txt
+    > flask_app=main
+    > flask run	
+    Go to http://127.0.0.1:5000
+    Make sure config file 'db/config.json' is writable for webserver.
+    Select and specify settings of database you prefer in start page. 
+    For sqlite usage make sure that database file 'db/mtt.db' is writable for webserver.
     To protect your tasks from modification by the others you may specify password in settings.
 
 Update to new version
 
-    Us pip
     
