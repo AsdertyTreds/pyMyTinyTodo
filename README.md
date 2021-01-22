@@ -27,6 +27,7 @@ How to install myTinyTodo
     Unpack
     Make enviroment in directory pymytinytodo
     > python -m venv venv
+    > venv\Scripts\activate.bat
     > pip install -r requirements.txt
     > python main.py
     Go to http://127.0.0.1:5000
