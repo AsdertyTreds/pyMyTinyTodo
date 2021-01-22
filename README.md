@@ -4,7 +4,7 @@ Written in Python and js jQuery.
 Data stored in SQLite, MySQL, PosgreSql, MSSql, Oracle database.
 Distributed under the GNU GPL License
 
-This is a copy and continuation of the project https://mytinytodo.net (author Max Pozdeev), written in php language
+This is the python development of the project https://mytinytodo.net (written in php, author Max Pozdeev),  
 
 System requirements
 
