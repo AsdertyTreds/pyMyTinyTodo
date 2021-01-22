@@ -198,5 +198,6 @@ def settings():
     timezones = pytz.all_timezones
     return render_template(s.values['templates'] + '/settings.html',
                            s=s.values, timezones=timezones, langlist=langlist, l=langua)
-# if __name__ == "__main__":
-#     app.run(host='0.0.0.0', port=5000)
+
+if __name__ == "__main__":
+    app.run(host='127.0.0.1', port=5000)
