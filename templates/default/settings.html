@@ -37,9 +37,10 @@
 </tr>
 {% if s.setup>1 %}
 <tr>
-<th>{{ l.set_database }} (Database):</th>
+<th>{{ l.set_database }} (Database):<br><span class="descr">{{ l.set_database_descr }}(Save settings and resart Flask if chenge)</span></th>
 <td>
-	<select name="db" {% if s.setup==3 %} disabled="disabled" {% endif %}>
+	<select name="db" {% if s.setup>2 %} disabled="disabled" {% endif %}>
+<!--	<select name="db">-->
         <option value="sqlite" title="SQLite" onclick="$(this.form).find(&quot;#sql&quot;).hide()" {% if s.db=='sqlite' %} selected="selected" {% endif %}>SQLite</option>
         <option value="mysql" title="Mysql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='mysql' %} selected="selected" {% endif %}>Mysql</option>
         <option value="postgresql" title="Postgresql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='postgresql' %} selected="selected" {% endif %}>Postgresql</option>

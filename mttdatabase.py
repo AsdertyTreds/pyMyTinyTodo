@@ -44,10 +44,6 @@ except ModuleNotFoundError as e:
 database = SQLAlchemy(app)
 
 
-def table_exists(name):
-    return database.engine.dialect.has_table(database.engine, name)
-
-
 class Lists(database.Model):
     __tablename__ = s.values['prefix'] + 'lists'
     id = database.Column(database.Integer, name='id', nullable=False, unique=True, primary_key=True, autoincrement=True)
