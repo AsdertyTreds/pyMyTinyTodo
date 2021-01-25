@@ -10,7 +10,25 @@
 
 {% block script %}
 <script>
+$().ready(function(){
+    db_init = $("select[name=db]").val();
+})
 
+function setup_db() {
+    db = $("select[name=db]").val();
+    if (db != db_init) {
+        $("#db_alert").text('After changing the database, save settings and restart flask!');
+    }
+    else {
+        $("#db_alert").text('');
+    }
+    if (db != 'sqlite') {
+        $("#sql").show();
+    }
+    else {
+        $("#sql").hide();
+    }
+}
 </script>
 {% endblock %}
 
@@ -40,13 +58,13 @@
 <th>{{ l.set_database }} (Database):<br><span class="descr">{{ l.set_database_descr }}(Save settings and resart Flask if chenge)</span></th>
 <td>
 	<select name="db" {% if s.setup>2 %} disabled="disabled" {% endif %}>
-<!--	<select name="db">-->
-        <option value="sqlite" title="SQLite" onclick="$(this.form).find(&quot;#sql&quot;).hide()" {% if s.db=='sqlite' %} selected="selected" {% endif %}>SQLite</option>
-        <option value="mysql" title="Mysql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='mysql' %} selected="selected" {% endif %}>Mysql</option>
-        <option value="postgresql" title="Postgresql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='postgresql' %} selected="selected" {% endif %}>Postgresql</option>
-        <option value="mssql" title="Mssql" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='mssql' %} selected="selected" {% endif %}>MS-sql</option>
-        <option value="oracle" title="Oracle" onclick="$(this.form).find(&quot;#sql&quot;).show()" {% if s.db=='oracle' %} selected="selected" {% endif %}>Oracle</option>
+        <option value="sqlite" title="SQLite" onclick="setup_db();" {% if s.db=='sqlite' %} selected="selected" {% endif %}>SQLite</option>
+        <option value="mysql" title="Mysql" onclick="setup_db();" {% if s.db=='mysql' %} selected="selected" {% endif %}>Mysql</option>
+        <option value="postgresql" title="Postgresql" onclick="setup_db();" {% if s.db=='postgresql' %} selected="selected" {% endif %}>Postgresql</option>
+        <option value="mssql" title="Mssql" onclick="setup_db();" {% if s.db=='mssql' %} selected="selected" {% endif %}>MS-sql</option>
+        <option value="oracle" title="Oracle" onclick="setup_db();" {% if s.db=='oracle' %} selected="selected" {% endif %}>Oracle</option>
     </select>
+    <span id="db_alert"> </span>
 </td>
 <tr id="sql" {% if s.db=='sqlite' %} style="display: none;" {% endif %}>
 <th>{{ l.set_sql }}(Mysql settings):</th>

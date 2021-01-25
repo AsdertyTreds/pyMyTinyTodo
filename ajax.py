@@ -734,7 +734,6 @@ def changeorder(order: str):
 
 
 def tagsize(qmin, q, step):
-    from math import ceil
     if step == 0:
         return 1
     v = ceil((q - qmin) / step)
