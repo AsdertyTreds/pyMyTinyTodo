@@ -4,7 +4,7 @@ Written in Python and js jQuery.
 Data stored in SQLite, MySQL, PosgreSql, MSSql, Oracle database.
 Distributed under the GNU GPL License
 
-This is a copy and continuation of the project https://mytinytodo.net (author Max Pozdeev), written in php language
+This is the python development of the project https://mytinytodo.net (written in php, author Max Pozdeev),  
 
 System requirements
 
@@ -24,10 +24,12 @@ Tested in browsers: Chrome 85, Safari 14, Firefox 80, IE v11
 How to install myTinyTodo
 
     Download release archive
+    https://github.com/AsdertyTreds/pyMyTinyTodo/releases/tag/1.6.2b
     Unpack
+    > cd pymytinytodo
     Make enviroment in directory pymytinytodo
     > python -m venv venv
-    > venv\Scripts\activate.bat
+    > venv/Scripts/activate
     > pip install -r requirements.txt
     > python main.py
     Go to http://127.0.0.1:5000
