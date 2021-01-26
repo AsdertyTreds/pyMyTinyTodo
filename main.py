@@ -168,18 +168,23 @@ def settings():
                     s.values['sql_host'] = request.form['sql_host']
 
             if s.values['setup'] == 3:
-                if not database.engine.dialect.has_table(database.engine, s.values['prefix'] + 'lists'):
-                    database.create_all()
-                    row = Lists(uuid=str(uuid.uuid4()),
-                                name='Todo1',
-                                d_created=time.time(),
-                                d_edited=time.time(),
-                                taskview=1)
-                    database.session.add(row)
-                    database.session.commit()
-                s.values['setup'] = 4
-                s.save('db/config.json')
-                return redirect(url_for('index'))
+                try:
+                    if not database.engine.dialect.has_table(database.engine, s.values['prefix'] + 'lists'):
+                        database.create_all()
+                        row = Lists(uuid=str(uuid.uuid4()),
+                                    name='Todo1',
+                                    d_created=time.time(),
+                                    d_edited=time.time(),
+                                    taskview=1)
+                        database.session.add(row)
+                        database.session.commit()
+                    s.values['setup'] = 4
+                    s.save('db/config.json')
+                    return redirect(url_for('index'))
+                except Error as e:
+                    database.session.rollback()
+                    print(e)
+                    return redirect(url_for('index'))
             s.save('db/config.json')
 
 
