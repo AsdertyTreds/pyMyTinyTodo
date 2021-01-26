@@ -24,7 +24,7 @@ Tested in browsers: Chrome 85, Safari 14, Firefox 80, IE v11
 How to install myTinyTodo
 
     Download release archive
-    https://github.com/AsdertyTreds/pyMyTinyTodo/releases/tag/1.6.2b
+    https://github.com/AsdertyTreds/pyMyTinyTodo/releases/
     Unpack
     > cd pymytinytodo
     Make enviroment in directory pymytinytodo
